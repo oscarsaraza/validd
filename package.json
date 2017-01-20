@@ -1,0 +1,37 @@
+{
+  "name": "validd",
+  "version": "0.0.1",
+  "description": "An experiment on data validation",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./src/test.js --compilers js:babel-register",
+    "compile": "babel --presets env -d lib/ src/",
+    "prepublish": "npm run compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oscarsaraza/validd.git"
+  },
+  "keywords": [
+    "Validation",
+    "Schema"
+  ],
+  "author": "Oscar Saraza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oscarsaraza/validd/issues"
+  },
+  "homepage": "https://github.com/oscarsaraza/validd#readme",
+  "devDependencies": {
+    "babel-cli": "^6.22.0",
+    "babel-preset-env": "^1.1.8",
+    "babel-register": "^6.22.0",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
+}
