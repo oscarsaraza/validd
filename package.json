@@ -1,10 +1,10 @@
 {
   "name": "validd",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An experiment on data validation",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "mocha ./src/test.js --compilers js:babel-register",
+    "test": "mocha ./test/test.js --compilers js:babel-register",
     "compile": "babel --presets env -d lib/ src/",
     "prepublish": "npm run compile"
   },

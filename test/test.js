@@ -1,6 +1,12 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import { validate } from './';
+import { validate } from '../src';
+
+// TODO Warn about missing schema.type
+// TODO: Handle custom types: 'email', 'phoneNumber', ...
+// TODO: Handle exceptions for arrays and objects...
+// TODO: Warn about object type without fields
+// TODO: warn about schema errors
 
 describe('Data validation', () => {
   describe('validate()', () => {
