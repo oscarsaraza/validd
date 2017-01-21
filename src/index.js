@@ -48,7 +48,7 @@ export const validate = (schema, data) => {
 
       if (schema.isRequired && !data) {
         result.errors = result.errors || [];
-        result.errors.push({ error: 'isRequired' });
+        result.errors.push({ error: 'isRequired', message: schema.messages['isRequired'] });
       }
       
       if (schema.type === 'object' && data !== null) { // null is also of type 'object'
@@ -66,14 +66,18 @@ export const validate = (schema, data) => {
       } else if (schema.type === 'array') {
         resolve(result);
       } else if (schema.type === 'string') {
-        if (schema.minLength && data.length < schema.minLength) {
-          result.errors = result.errors || [];
-          result.errors.push({ error: 'minLength' });
-          resolve(result);
+        if (schema.minLength) {
+          if (data.length === 0) {
+            resolve(result);
+          } else if (data.length < schema.minLength) {
+            result.errors = result.errors || [];
+            result.errors.push({ error: 'minLength', message: schema.messages['minLength'] });
+            resolve(result);
+          }
         }
         if (schema.maxLength && data.length > schema.maxLength) {
           result.errors = result.errors || [];
-          result.errors.push({ error: 'maxLength' });
+          result.errors.push({ error: 'maxLength', message: schema.messages['maxLength'] });
           resolve(result);
         }
         if (schema.validation) {
@@ -100,7 +104,7 @@ export const validate = (schema, data) => {
         if(schema.regex && schema.regex instanceof RegExp) {
           if (!schema.regex.test(data)) {
             result.errors = result.errors || [];
-            result.errors.push({ error: 'regex'});
+            result.errors.push({ error: 'regex', message: schema.messages['regex']});
           }
           resolve(result);
         }

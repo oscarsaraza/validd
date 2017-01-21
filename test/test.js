@@ -65,7 +65,7 @@ describe('Data validation', () => {
 
     it('should return is-required error when value is empty string', (done) => {
       const schema = { type: 'string', isRequired: true };
-      const expectedResult = { errors: [{ error: 'isRequired' }] };
+      const expectedResult = { errors: [{ error: 'isRequired', message: 'The field is required' }] };
 
       validate(schema, '').then(result => {
         assert.deepEqual(result, expectedResult);
@@ -75,7 +75,7 @@ describe('Data validation', () => {
 
     it('should return is-required error when value is null', (done) => {
       const schema = { type: 'string', isRequired: true };
-      const expectedResult = { errors: [{ error: 'isRequired' }] };
+      const expectedResult = { errors: [{ error: 'isRequired', message: 'The field is required' }] };
 
       validate(schema, null).then(result => {
         assert.deepEqual(result, expectedResult);
@@ -93,7 +93,7 @@ describe('Data validation', () => {
       };
       const expectedResult = {
         fields: {
-          fieldName: { errors: [{ error: 'isRequired' }] },
+          fieldName: { errors: [{ error: 'isRequired', message: 'The field is required' }] },
           fieldName2: { },
         },
       };
@@ -126,8 +126,17 @@ describe('Data validation', () => {
 
     it('should return min-length error', (done) => {
       const schema = { type: 'string', minLength: 5 };
-      const expectedResult = { errors: [{ error: 'minLength' }] };
+      const expectedResult = { errors: [{ error: 'minLength', message: 'This field must be larger' }] };
       validate(schema, 'abcd').then(result => {
+        assert.deepEqual(result, expectedResult);
+        done();
+      });
+    });
+
+    it('should not return min-length error on empty string', (done) => {
+      const schema = { type: 'string', minLength: 5 };
+      const expectedResult = {};
+      validate(schema, '').then(result => {
         assert.deepEqual(result, expectedResult);
         done();
       });
@@ -135,7 +144,7 @@ describe('Data validation', () => {
 
     it('should return max-length error', (done) => {
       const schema = { type: 'string', maxLength: 10 };
-      const expectedResult = { errors: [{ error: 'maxLength' }] };
+      const expectedResult = { errors: [{ error: 'maxLength', message: 'This field must be shorter' }] };
       validate(schema, 'abcde-abcde').then(result => {
         assert.deepEqual(result, expectedResult);
         done();
@@ -144,13 +153,13 @@ describe('Data validation', () => {
 
     it('should evaluate custom validation function', (done) => {
       const validationFunction = (value) =>
-        (value === 'abc' ? { error: 'customError' } : null);
+        (value === 'abc' ? { error: 'customError', message: 'Custom error' } : null);
       const schema = { type: 'object', fields: {
         field1: { type: 'string', validation: validationFunction },
         field2: { type: 'string', validation: validationFunction },
       } };
       const expectedResult = { fields: {
-        field1: { errors: [{ error: 'customError' }] },
+        field1: { errors: [{ error: 'customError', message: 'Custom error' }] },
         field2: { },
       } };
       validate(schema, { field1: 'abc', field2: 'abcde' }).then(result => {
@@ -161,7 +170,7 @@ describe('Data validation', () => {
 
     it('should evaluate custom validation promise', (done) => {
       const validationFunction = (value) => new Promise((resolve) => {
-        const error = (value === 'abc' ? { error: 'customError' } : null);
+        const error = (value === 'abc' ? { error: 'customError', message: 'Custom error' } : null);
         resolve(error);
       });
       const schema = { type: 'object', fields: {
@@ -169,7 +178,7 @@ describe('Data validation', () => {
         field2: { type: 'string', validation: validationFunction },
       } };
       const expectedResult = { fields: {
-        field1: { errors: [{ error: 'customError' }] },
+        field1: { errors: [{ error: 'customError', message: 'Custom error' }] },
         field2: { },
       } };
       validate(schema, { field1: 'abc', field2: 'abcde' }).then(result => {
@@ -187,9 +196,9 @@ describe('Data validation', () => {
       } };
       const expectedResult = { fields: {
         correctChars: { },
-        incorrectChars: { errors: [{ error: 'regex' }] },
+        incorrectChars: { errors: [{ error: 'regex', message: 'The field value is invalid' }] },
         correctNum: { },
-        incorrectNum: { errors: [{ error: 'regex' }] },
+        incorrectNum: { errors: [{ error: 'regex', message: 'The field value is invalid' }] },
       } };
       const data = {
         correctChars: 'abcñ Ñ ABC',
