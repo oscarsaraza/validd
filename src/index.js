@@ -67,7 +67,7 @@ export const validate = (schema, data) => {
         resolve(result);
       } else if (schema.type === 'string') {
         if (schema.minLength) {
-          if (data.length === 0) {
+          if (!data || data.length === 0) {
             resolve(result);
           } else if (data.length < schema.minLength) {
             result.errors = result.errors || [];

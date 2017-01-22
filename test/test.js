@@ -142,6 +142,15 @@ describe('Data validation', () => {
       });
     });
 
+    it('should not return min-length error on undefined data', (done) => {
+      const schema = { type: 'string', minLength: 5 };
+      const expectedResult = {};
+      validate(schema, undefined).then(result => {
+        assert.deepEqual(result, expectedResult);
+        done();
+      });
+    });
+
     it('should return max-length error', (done) => {
       const schema = { type: 'string', maxLength: 10 };
       const expectedResult = { errors: [{ error: 'maxLength', message: 'This field must be shorter' }] };
