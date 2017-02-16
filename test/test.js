@@ -2,12 +2,6 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import { validate } from '../src';
 
-// TODO Warn about missing schema.type
-// TODO: Handle custom types: 'email', 'phoneNumber', ...
-// TODO: Handle exceptions for arrays and objects...
-// TODO: Warn about object type without fields
-// TODO: warn about schema errors
-
 describe('Data validation', () => {
   describe('validate()', () => {
     it('should return no errors on empty schema', (done) => {
@@ -220,5 +214,61 @@ describe('Data validation', () => {
         done();
       });
     });
+
+    it('should return errors for each field on multiple fields schema', (done) => {
+      const schema = {
+        type: 'object',
+        fields: {
+          numberField: {
+            type: 'number',
+            isRequired: true,
+          },
+          textField: {
+            type: 'string',
+            isRequired: true,
+          },
+        }
+      };
+      const expectedResult = { fields: {
+        numberField: { errors: [{ error: 'isRequired', message: 'The field is required' }] },
+        textField: { errors: [{ error: 'isRequired', message: 'The field is required' }] },
+      } };
+      validate(schema, {}).then(result => {
+        assert.deepEqual(result, expectedResult);
+        done();
+      });
+    });
+
+    it('should return errors on one fields on multiple fields schema', (done) => {
+      const schema = {
+        type: 'object',
+        fields: {
+          numberField: {
+            type: 'number',
+            isRequired: true,
+          },
+          textField: {
+            type: 'string',
+            isRequired: true,
+          },
+        }
+      };
+      const expectedResult = { fields: {
+        numberField: { errors: [{ error: 'isRequired', message: 'The field is required' }] },
+        textField: {},
+      } };
+      validate(schema, { textField: '123' }).then(result => {
+        assert.deepEqual(result, expectedResult);
+        done();
+      });
+    })
+
+    // TODO: Handle custom types: 'email', 'phoneNumber', ...
+    // TODO Warn about missing schema.type
+    // TODO: Handle exceptions for arrays and objects...
+    // TODO: Warn about object type without fields
+    // TODO: warn about schema errors
+    // TODO: Add i18n
+    // TODO: Create constants to describe allowed data types
   });
 });
