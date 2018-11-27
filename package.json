@@ -23,11 +23,11 @@
   },
   "homepage": "https://github.com/oscarsaraza/validd#readme",
   "devDependencies": {
-    "babel-cli": "^6.22.0",
-    "babel-preset-env": "^1.1.8",
-    "babel-register": "^6.22.0",
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0"
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
   },
   "babel": {
     "presets": [
