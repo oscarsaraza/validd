@@ -40,7 +40,7 @@ const dataToValidate = {
   personName: 'abcd',
 };
 validate(formSchema, dataToValidate)
-  .then(validationResult => console.log(validationResut))
+  .then(validationResult => console.log(validationResult))
 ```
 
 The validation result must have an structure similar to this.
