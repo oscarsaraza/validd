@@ -29,89 +29,89 @@ export const addSchemaDefaultErrorMessages = schema => {
   return Object.assign({}, schema, { messages })
 }
 
-export const validate = (schema, data) => {
-  return new Promise((resolve, reject) => {
+export const validate = (schema, data) =>
+  new Promise(resolve => {
     const result = {}
     if (!schema || Object.keys(schema).length === 0 || !schema.type) {
       resolve(result)
-    } else {
-      schema = addSchemaDefaultErrorMessages(schema)
-      const dataType = getType(data)
-      if (data && dataType !== schema.type) {
-        result.errors = result.errors || []
-        result.errors.push({ error: 'invalidType', message: schema.messages['invalidType'] })
+      return
+    }
+
+    schema = addSchemaDefaultErrorMessages(schema)
+    const dataType = getType(data)
+    if (data && dataType !== schema.type) {
+      result.errors = result.errors || []
+      result.errors.push({ error: 'invalidType', message: schema.messages['invalidType'] })
+      resolve(result)
+    }
+
+    if (schema.isRequired && !data) {
+      result.errors = result.errors || []
+      result.errors.push({ error: 'isRequired', message: schema.messages['isRequired'] })
+    }
+
+    if (schema.type === 'object' && data !== null) {
+      // null is also of type 'object'
+      const fieldNames = schema.fields && Object.keys(schema.fields)
+      const validationPromises = fieldNames
+        .map(name => ({ [name]: validate(schema.fields[name], data[name]) }))
+        .reduce((prev, curr) => {
+          return Object.assign({}, prev, curr)
+        }, {})
+      resolveObjectPromises(validationPromises).then(fieldsValidationResult => {
+        result.fields = fieldsValidationResult
         resolve(result)
-      }
-
-      if (schema.isRequired && !data) {
-        result.errors = result.errors || []
-        result.errors.push({ error: 'isRequired', message: schema.messages['isRequired'] })
-      }
-
-      if (schema.type === 'object' && data !== null) {
-        // null is also of type 'object'
-        const fieldNames = schema.fields && Object.keys(schema.fields)
-        const validationPromises = fieldNames
-          .map(name => ({ [name]: validate(schema.fields[name], data[name]) }))
-          .reduce((prev, curr) => {
-            return Object.assign({}, prev, curr)
-          }, {})
-        resolveObjectPromises(validationPromises).then(fieldsValidationResult => {
-          result.fields = fieldsValidationResult
+      })
+    } else if (schema.type === 'array') {
+      resolve(result)
+    } else if (schema.type === 'string') {
+      if (schema.minLength) {
+        if (!data || data.length === 0) {
           resolve(result)
-        })
-      } else if (schema.type === 'array') {
-        resolve(result)
-      } else if (schema.type === 'string') {
-        if (schema.minLength) {
-          if (!data || data.length === 0) {
-            resolve(result)
-          } else if (data.length < schema.minLength) {
-            result.errors = result.errors || []
-            result.errors.push({ error: 'minLength', message: schema.messages['minLength'] })
-            resolve(result)
-          }
-        }
-        if (schema.maxLength && data.length > schema.maxLength) {
+        } else if (data.length < schema.minLength) {
           result.errors = result.errors || []
-          result.errors.push({ error: 'maxLength', message: schema.messages['maxLength'] })
+          result.errors.push({ error: 'minLength', message: schema.messages['minLength'] })
           resolve(result)
         }
-        if (schema.validation) {
-          if (typeof schema.validation === 'function') {
-            const customValidationResult = schema.validation(data)
-            if (customValidationResult && customValidationResult.then) {
-              // Is a promise
-              customValidationResult.then(promiseValidationResult => {
-                if (promiseValidationResult) {
-                  result.errors = result.errors || []
-                  result.errors.push(promiseValidationResult)
-                }
-                resolve(result)
-              })
-            } else if (customValidationResult) {
-              // Is a validation result
-              result.errors = result.errors || []
-              result.errors.push(customValidationResult)
-            }
-            resolve(result)
-          }
-        } else {
-          resolve(result)
-        }
-
-        if (schema.regex && schema.regex instanceof RegExp) {
-          if (!schema.regex.test(data)) {
-            result.errors = result.errors || []
-            result.errors.push({ error: 'regex', message: schema.messages['regex'] })
-          }
-          resolve(result)
-        }
-      } else if (schema.type === 'number') {
+      }
+      if (schema.maxLength && data.length > schema.maxLength) {
+        result.errors = result.errors || []
+        result.errors.push({ error: 'maxLength', message: schema.messages['maxLength'] })
         resolve(result)
+      }
+      if (schema.validation) {
+        if (typeof schema.validation === 'function') {
+          const customValidationResult = schema.validation(data)
+          if (customValidationResult && customValidationResult.then) {
+            // Is a promise
+            customValidationResult.then(promiseValidationResult => {
+              if (promiseValidationResult) {
+                result.errors = result.errors || []
+                result.errors.push(promiseValidationResult)
+              }
+              resolve(result)
+            })
+          } else if (customValidationResult) {
+            // Is a validation result
+            result.errors = result.errors || []
+            result.errors.push(customValidationResult)
+          }
+          resolve(result)
+        }
       } else {
         resolve(result)
       }
+
+      if (schema.regex && schema.regex instanceof RegExp) {
+        if (!schema.regex.test(data)) {
+          result.errors = result.errors || []
+          result.errors.push({ error: 'regex', message: schema.messages['regex'] })
+        }
+        resolve(result)
+      }
+    } else if (schema.type === 'number') {
+      resolve(result)
+    } else {
+      resolve(result)
     }
   })
-}
