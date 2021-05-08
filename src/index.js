@@ -55,14 +55,21 @@ export const validate = (schema, data) =>
       const fieldNames = schema.fields && Object.keys(schema.fields)
       const validationPromises = fieldNames
         .map(name => ({ [name]: validate(schema.fields[name], data[name]) }))
-        .reduce((prev, curr) => {
-          return Object.assign({}, prev, curr)
-        }, {})
+        .reduce((prev, curr) => ({ ...prev, ...curr }), {})
       resolveObjectPromises(validationPromises).then(fieldsValidationResult => {
         result.fields = fieldsValidationResult
         resolve(result)
       })
     } else if (schema.type === 'array') {
+      if (schema.minLength) {
+        if (!data || data.length === 0) {
+          resolve(result)
+        } else if (data.length < schema.minLength) {
+          result.errors = result.errors || []
+          result.errors.push({ error: 'minLength', message: schema.messages['minLength'] })
+          resolve(result)
+        }
+      }
       resolve(result)
     } else if (schema.type === 'string') {
       if (schema.minLength) {
