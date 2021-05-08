@@ -27,14 +27,7 @@ describe('Data validation', () => {
 
     it('should return invalid-type error when specified type doesnt match', done => {
       const schema = { type: 'object' }
-      const expectedResult = {
-        errors: [
-          {
-            error: 'invalidType',
-            message: 'Invalid data type',
-          },
-        ],
-      }
+      const expectedResult = { errors: [{ error: 'invalidType', message: 'Invalid data type' }] }
       validate(schema, []).then(result => {
         assert.deepEqual(result, expectedResult)
         done()
@@ -42,18 +35,8 @@ describe('Data validation', () => {
     })
 
     it('should return invalid-type error with custom message when specified type doesnt match', done => {
-      const schema = {
-        type: 'object',
-        messages: { invalidType: 'Tipo de dato inválido' },
-      }
-      const expectedResult = {
-        errors: [
-          {
-            error: 'invalidType',
-            message: 'Tipo de dato inválido',
-          },
-        ],
-      }
+      const schema = { type: 'object', messages: { invalidType: 'Tipo de dato inválido' } }
+      const expectedResult = { errors: [{ error: 'invalidType', message: 'Tipo de dato inválido' }] }
       validate(schema, []).then(result => {
         assert.deepEqual(result, expectedResult)
         done()
@@ -62,9 +45,7 @@ describe('Data validation', () => {
 
     it('should return is-required error when value is empty string', done => {
       const schema = { type: 'string', isRequired: true }
-      const expectedResult = {
-        errors: [{ error: 'isRequired', message: 'The field is required' }],
-      }
+      const expectedResult = { errors: [{ error: 'isRequired', message: 'The field is required' }] }
 
       validate(schema, '').then(result => {
         assert.deepEqual(result, expectedResult)
@@ -74,9 +55,7 @@ describe('Data validation', () => {
 
     it('should return is-required error when value is null', done => {
       const schema = { type: 'string', isRequired: true }
-      const expectedResult = {
-        errors: [{ error: 'isRequired', message: 'The field is required' }],
-      }
+      const expectedResult = { errors: [{ error: 'isRequired', message: 'The field is required' }] }
 
       validate(schema, null).then(result => {
         assert.deepEqual(result, expectedResult)
@@ -94,9 +73,7 @@ describe('Data validation', () => {
       }
       const expectedResult = {
         fields: {
-          fieldName: {
-            errors: [{ error: 'isRequired', message: 'The field is required' }],
-          },
+          fieldName: { errors: [{ error: 'isRequired', message: 'The field is required' }] },
           fieldName2: {},
         },
       }
@@ -116,10 +93,7 @@ describe('Data validation', () => {
     })
 
     it('should not return error when required object field is provided', done => {
-      const schema = {
-        type: 'object',
-        fields: { name: { type: 'string', isRequired: true } },
-      }
+      const schema = { type: 'object', fields: { name: { type: 'string', isRequired: true } } }
       const expectedResult = { fields: { name: {} } }
       validate(schema, { name: 'abc' }).then(result => {
         assert.deepEqual(result, expectedResult)
@@ -129,9 +103,7 @@ describe('Data validation', () => {
 
     it('should return min-length error', done => {
       const schema = { type: 'string', minLength: 5 }
-      const expectedResult = {
-        errors: [{ error: 'minLength', message: 'This field must be larger' }],
-      }
+      const expectedResult = { errors: [{ error: 'minLength', message: 'This field must be larger' }] }
       validate(schema, 'abcd').then(result => {
         assert.deepEqual(result, expectedResult)
         done()
@@ -158,9 +130,7 @@ describe('Data validation', () => {
 
     it('should return max-length error', done => {
       const schema = { type: 'string', maxLength: 10 }
-      const expectedResult = {
-        errors: [{ error: 'maxLength', message: 'This field must be shorter' }],
-      }
+      const expectedResult = { errors: [{ error: 'maxLength', message: 'This field must be shorter' }] }
       validate(schema, 'abcde-abcde').then(result => {
         assert.deepEqual(result, expectedResult)
         done()
@@ -178,9 +148,7 @@ describe('Data validation', () => {
       }
       const expectedResult = {
         fields: {
-          field1: {
-            errors: [{ error: 'customError', message: 'Custom error' }],
-          },
+          field1: { errors: [{ error: 'customError', message: 'Custom error' }] },
           field2: {},
         },
       }
@@ -205,9 +173,7 @@ describe('Data validation', () => {
       }
       const expectedResult = {
         fields: {
-          field1: {
-            errors: [{ error: 'customError', message: 'Custom error' }],
-          },
+          field1: { errors: [{ error: 'customError', message: 'Custom error' }] },
           field2: {},
         },
       }
@@ -230,21 +196,12 @@ describe('Data validation', () => {
       const expectedResult = {
         fields: {
           correctChars: {},
-          incorrectChars: {
-            errors: [{ error: 'regex', message: 'The field value is invalid' }],
-          },
+          incorrectChars: { errors: [{ error: 'regex', message: 'The field value is invalid' }] },
           correctNum: {},
-          incorrectNum: {
-            errors: [{ error: 'regex', message: 'The field value is invalid' }],
-          },
+          incorrectNum: { errors: [{ error: 'regex', message: 'The field value is invalid' }] },
         },
       }
-      const data = {
-        correctChars: 'abcñ Ñ ABC',
-        incorrectChars: '@abc',
-        correctNum: '123',
-        incorrectNum: '123a',
-      }
+      const data = { correctChars: 'abcñ Ñ ABC', incorrectChars: '@abc', correctNum: '123', incorrectNum: '123a' }
       validate(schema, data).then(result => {
         assert.deepEqual(result, expectedResult)
         done()
@@ -255,24 +212,14 @@ describe('Data validation', () => {
       const schema = {
         type: 'object',
         fields: {
-          numberField: {
-            type: 'number',
-            isRequired: true,
-          },
-          textField: {
-            type: 'string',
-            isRequired: true,
-          },
+          numberField: { type: 'number', isRequired: true },
+          textField: { type: 'string', isRequired: true },
         },
       }
       const expectedResult = {
         fields: {
-          numberField: {
-            errors: [{ error: 'isRequired', message: 'The field is required' }],
-          },
-          textField: {
-            errors: [{ error: 'isRequired', message: 'The field is required' }],
-          },
+          numberField: { errors: [{ error: 'isRequired', message: 'The field is required' }] },
+          textField: { errors: [{ error: 'isRequired', message: 'The field is required' }] },
         },
       }
       validate(schema, {}).then(result => {
@@ -285,25 +232,26 @@ describe('Data validation', () => {
       const schema = {
         type: 'object',
         fields: {
-          numberField: {
-            type: 'number',
-            isRequired: true,
-          },
-          textField: {
-            type: 'string',
-            isRequired: true,
-          },
+          numberField: { type: 'number', isRequired: true },
+          textField: { type: 'string', isRequired: true },
         },
       }
       const expectedResult = {
         fields: {
-          numberField: {
-            errors: [{ error: 'isRequired', message: 'The field is required' }],
-          },
+          numberField: { errors: [{ error: 'isRequired', message: 'The field is required' }] },
           textField: {},
         },
       }
       validate(schema, { textField: '123' }).then(result => {
+        assert.deepEqual(result, expectedResult)
+        done()
+      })
+    })
+
+    it('should return error on array min length', done => {
+      const schema = { type: 'array', minLength: 3 }
+      const expectedResult = { errors: [{ error: 'minLength', message: 'This field must be larger' }] }
+      validate(schema, [1, 2]).then(result => {
         assert.deepEqual(result, expectedResult)
         done()
       })
