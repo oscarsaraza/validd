@@ -1,6 +1,6 @@
 {
   "name": "validd",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "An experiment on data validation",
   "main": "lib/index.js",
   "scripts": {
