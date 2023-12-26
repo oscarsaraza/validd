@@ -1,6 +1,6 @@
 {
   "name": "validd",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "An experiment on data validation",
   "main": "lib/index.js",
   "scripts": {
@@ -24,12 +24,12 @@
   },
   "homepage": "https://github.com/oscarsaraza/validd#readme",
   "devDependencies": {
-    "@babel/cli": "^7.17.10",
-    "@babel/core": "^7.17.10",
-    "@babel/preset-env": "^7.17.10",
-    "@babel/register": "^7.17.7",
-    "chai": "^4.3.6",
-    "mocha": "^10.0.0"
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "@babel/register": "^7.22.15",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
   },
   "babel": {
     "presets": [
