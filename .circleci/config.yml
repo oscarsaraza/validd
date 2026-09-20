@@ -1,43 +1,31 @@
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:6-stretch-browsers
+      - image: cimg/node:22.0.0
     steps:
       - checkout
       - run:
-          name: Update npm
-          command: 'sudo npm install -g npm@latest'
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Install npm packages
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
+          name: Run build
+          command: npm run compile
 
   test:
     docker:
-      - image: circleci/node:6-stretch-browsers
+      - image: cimg/node:22.0.0
     steps:
       - checkout
-      - run:
-          name: Install npm packages
-          command: npm install
       - run:
           name: Test the app
           command: npm test
 
   publish:
     docker:
-      - image: circleci/node:6-stretch-browsers
+      - image: cimg/node:22.0.0
     steps:
       - checkout
       - run:
-          name: Install npm packages
-          command: npm install
+          name: Compile before publish
+          command: npm run compile
       - run:
           name: Publish to NPM
           command: npm publish --access public
