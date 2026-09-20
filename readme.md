@@ -1,15 +1,60 @@
 # Validd
 
-This is an attempt to create a simple data validation library.
+A lightweight, **zero-dependency** data validation library for JavaScript and TypeScript.
 
-To use it you need to create a validation schema.
+- ⚡ **Zero dependencies**: 0 runtime dependencies, 0 build dependencies.
+- 📦 **Dual package**: Native ES Modules (`import`) and CommonJS (`require`) support.
+- 🔷 **TypeScript ready**: Built-in type definitions (`.d.ts`) included out of the box.
+- 🚀 **Asynchronous & Synchronous**: Built-in support for sync and async validation rules.
 
+---
+
+## Installation
+
+```bash
+# Using npm
+npm install validd
+
+# Using pnpm
+pnpm add validd
+
+# Using yarn
+yarn add validd
 ```
+
+---
+
+## Usage
+
+### ES Modules (ESM)
+```javascript
+import { validate } from 'validd'
+```
+
+### CommonJS (CJS)
+```javascript
+const { validate } = require('validd')
+```
+
+---
+
+## Defining a Schema
+
+Create a schema defining the validation rules for your data:
+
+```javascript
+import { validate } from 'validd'
+
+const customAsyncValidationFunction = (value) =>
+  new Promise((resolve) => {
+    const error = value === 'admin' ? { error: 'reservedName', message: 'Name is reserved' } : null
+    resolve(error)
+  })
+
 const formSchema = {
   type: 'object',
-  messages: { // Schema is filled with default error messages before evaluation.
+  messages: {
     invalidType: 'Tipo de dato inválido',
-    // ...
   },
   fields: {
     personName: {
@@ -17,40 +62,46 @@ const formSchema = {
       isRequired: true,
       minLength: 5,
       maxLength: 20,
-      regex: /^[0-9]+$/,
-      validation: customAsyncValidationFunction, // Allow sync/async validations
-      messages: { // Custom error messages
+      regex: /^[a-zA-Z ]+$/,
+      validation: customAsyncValidationFunction,
+      messages: {
         minLength: 'Must have at least 5 characters',
         maxLength: 'Text is too long...',
       },
     },
   },
-};
-
-const customAsyncValidationFunction = (value) => new Promise((resolve) => {
-  const error = (value === 'abc' ? { error: 'customError' } : null);
-  resolve(error);
-});
+}
 ```
 
-To validate data just use the validate function
+---
 
-```
+## Validating Data
+
+Pass the schema and the object to validate. `validate` returns a Promise with the validation result:
+
+```javascript
 const dataToValidate = {
-  personName: 'abcd',
-};
-validate(formSchema, dataToValidate)
-  .then(validationResult => console.log(validationResult))
+  personName: 'Alice',
+}
+
+const result = await validate(formSchema, dataToValidate)
+console.log(result)
 ```
 
-The validation result must have an structure similar to this.
+### Example Validation Result
 
+If valid, an empty object or clean fields map is returned:
+```javascript
+{}
 ```
-const validationResultExample = {
+
+If errors are encountered:
+```javascript
+{
   errors: [
     {
-      error: 'invalid-type',
-      message: 'Tipo de dato inválido',
+      error: 'invalidType',
+      message: 'Invalid data type',
     },
   ],
   fields: {
@@ -58,20 +109,16 @@ const validationResultExample = {
       errors: [
         {
           error: 'minLength',
-          message: 'Debe tener al menos 5 caracteres.',
+          message: 'Must have at least 5 characters',
         },
       ],
     },
-    emailsGroup: [
-      {
-        errors: [
-          {
-            error: 'email',
-            message: 'Invalid email address',
-          },
-        ],
-      },
-    ],
-  }, // Fields end
-};
+  },
+}
 ```
+
+---
+
+## License
+
+[ISC](file:///Users/oscar/code/validd/package.json) © Oscar Saraza

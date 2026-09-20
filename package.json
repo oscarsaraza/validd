@@ -1,6 +1,6 @@
 {
   "name": "validd",
-  "version": "0.0.15",
+  "version": "0.1.0",
   "description": "An experiment on data validation",
   "type": "module",
   "main": "./lib/index.cjs",
