@@ -15,7 +15,8 @@
   },
   "files": [
     "lib",
-    "src"
+    "src",
+    "CHANGELOG.md"
   ],
   "engines": {
     "node": ">=18.0.0"
