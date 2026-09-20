@@ -2,7 +2,8 @@ name: Publish to NPM
 
 on:
   release:
-    types: [ published ]
+    types: [published]
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -18,8 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
-          registry-url: 'https://registry.npmjs.org'
+          node-version: 24.x
 
       - name: Run build
         run: node scripts/build.js
@@ -29,5 +29,3 @@ jobs:
 
       - name: Publish to NPM
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
